@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Gnoceipt</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script.js"></script> 
+</head>
+<body>
+    <div id="screenViewport">
+        <img src="images/iphone.png" id="iphone">
+        <div id="screen">
+            <img src="images/settingsButton.png" id="settingsButton">
+            <div id="dotdotdot">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div id="centeringContainer">
+                <div id="uploadFlyout">
+                    <span class="bold">Upload File</span>
+                    <p>Drag file here or browse.</p>
+                    <input type="file" id="fileInput" class="file-input" />
+                    <div id="dropArea">Drop files here</div>
+                </div>
+            </div>
+            <div id="navBar">
+                <div id="navRectangle"></div>
+                <div id="navSelection">
+                    <img src="images/navBar/selectionDivot.png" class="selectionAsset" id="selectionDivot">
+                    <img src="images/navBar/selectionCircle.png" class="selectionAsset" id="selectionCircle">
+                </div>
+                <div id="navBarIcons">
+                    <img src="images/navBar/chatButton.png" class="navIcon" id="chatButton">
+                    <img src="images/navBar/historyButton.png" class="navIcon" id="historyButton">
+                    <img src="images/navBar/uploadButton.png" class="navIcon" id="uploadButton">
+                    <img src="images/navBar/progressButton.png" class="navIcon" id="progressButton">
+                    <img src="images/navBar/weeklyButton.png" class="navIcon" id="weeklyButton">
+                </div>
+            </div>
+            <img src="images/clouds.png" class="background" id="clouds">
+            <section id="mainScreen" class="slidyslide">
+                <img src="images/island.png" id="island">
+                <img src="images/twiggy.png" id="twiggyIsland">
+            </section>
+            <section id="chatScreen" class="slidyslide">
+                <div id="messageContainerContainer">
+                    <div class="messageContainer">
+                        <img src="images/gnomepfp.png" class="pfp">
+                        <div class="box">
+                            <p id="textBox">Ask me anything! Sustainable alternatives? What to avoid? I got you!</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="sendMessageContainer">
+                    <input type="text" id="inputMessage" placeholder="Ask me anything..." />
+                    <img src="images/sendButton.png" id="sendButton">
+                </div>
+            </section>
+            <section id="historyScreen" class="slidyslide">
+                <div id="ratingCardContainerContainer">
+                    <div class="ratingCardContainer">
+                        <div class="ratingCard">
+                            <p class="ratingDate">2/24/2025</p>
+                            <div class="ratingBox">
+                                <img src="images/receipt.jpg" class="receipt">
+                                <div class="whiteOverlay"></div>
+                                <p1 class="pointsLabel">Points</p1>
+                                <h1 class="pointsNum">5</h1>
+                                <p>Sustainability Score<span class="susScore"></span></p>
+                                <div class="ratingMeterContainer">
+                                    <div class="ratingMeterCircle"></div>
+                                    <img src="images/ratingMeter.png" class="ratingMeter">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="progressScreen" class="slidyslide">
+                <h1><span id="progressNum">25</span>/75</h1>
+                <img src="images/plant1.png" id="plantImage">
+            </section>
+            <section id="weeklyScreen" class="slidyslide">
+                <div id="outerContainer">
+                    <div id="weeklySusContainer">
+                        <img src="images/twiggyRating.png" id="weeklyTwiggy">
+                        <div class="stackingContainer">
+                            <h1>How is Lauren doing?</h1>
+                            <p>Let's check your sustainability score!</p>
+                            <div id="weeklyMeterContainer">
+                                <img src="images/weeklySus.png" id="weeklyMeter">
+                                <div id="weeklyMeterCircle"></div>
+                                <h1 id="weeklyNumber">5</h1>
+                                <p id="ratingLabel">out of <br>10</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="weeklySummaryContainer">
+                        <img src="images/weeklyPlant.png" id="weeklyPlant">
+                        <div class="stackingContainer2">
+                            <h1>Great Job!</h1>
+                            <p><span></span>point increase from last week.</p>
+                            <p><strong>Best Products:</strong></p>
+                            <p><strong>Worst Products:</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="congrats" class="slidyslide">
+                <p id="congratsText"><strong>Congratulations!</strong><br> Check out your plant in your garden!</p>
+                <img src="images/plant3.png" id="plantImage">
+                <div id="returntoMain">See Garden</div>
+            </section>
+        </div>
+    </div>   
+</body>
+</html>
