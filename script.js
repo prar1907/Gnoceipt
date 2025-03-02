@@ -9,7 +9,7 @@ $(document).ready(function () {
 
     let average = 5;
     let ratingList = [5];
-    let points = 25;
+    let points = 50;
 
     const screenMap = {
         chatButton: "#chatScreen",
@@ -48,21 +48,26 @@ $(document).ready(function () {
             $("#centeringContainer").toggle();
             $("#dropArea").html('<p>Drag file here or browse.</p>');
         }
+
+        if ($(currentActiveIcon).attr("id") === "chatButton") {
+            $(".background").attr("src", "images/wheat.png");
+        } else if ($(currentActiveIcon).attr("id") === "historyButton") {
+            $(".background").attr("src", "images/bee.png");
+        } else {
+            $(".background").attr("src", "images/clouds.png");
+        }
+
+        if ($(currentActiveIcon).attr("id") === "progressButton") {
+            $("#selectionDivot").attr("src", "images/navBar/selectionDivotBrown.png");
+        } else if ($(currentActiveIcon).attr("id") === "chatButton"){
+            $("#selectionDivot").attr("src", "images/navBar/selectionDivotYellow.png"); 
+        } else {
+            $("#selectionDivot").attr("src", "images/navBar/selectionDivot.png"); 
+        }
         if (points >= 75) {
             if ($(currentActiveIcon).attr("id") === "progressButton") {
-                // Hide everything except the congrats screen
                 $(".slidyslide, #navBar, #centeringContainer, #weeklyMeterCircle, #settingsButton, #dotdotdot, #returntoMain, #congratsText").hide();
-                $("#congrats").show();
-                
-                // Animate plant zoom-in effect
-                $("#plantImage").css({ transform: "scale(1)" }) // Reset scale
-                    .animate({ transform: "scale(2)" }, { 
-                        step: function (now) { $(this).css("transform", `scale(${now})`); }, 
-                        duration: 3000 
-                    });
-        
-                // Show congratulatory message with fade effect
-                $("#fadeText").fadeOut(1500);
+                $("#congrats").fadeIn(1000);
                 $("#congratsText").fadeIn(1500);
                 setTimeout(function () {
                     $("#returntoMain").fadeIn();
@@ -72,13 +77,39 @@ $(document).ready(function () {
     });
     $("#returntoMain").click(function () {
         points = 0;
-        $("#progressNum").text(points)
+        currentActiveIcon = $("#uploadButton");
+        $("#progressButton").attr("src", "images/navBar/progressButton.png");
+        $("#progressNum").text(points);
         $("#plantImage").attr("src", pointsMap[0]);
-        $("#plantImage").css("height", "100px")
-        $("#congrats").hide();
-        $(".slidyslide, #navBar,#settingsButton, #dotdotdot").show();
+        $("#congrats, #congratsText, #returntoMain, #fadeText").hide();
+        $(".slidyslide, #navBar, #settingsButton, #dotdotdot, #clouds").show();
+        $(".slidyslide").hide();
         $("#mainScreen").show();
+        $(".navIcon").animate({ top: "0px" }, 300);
+        $("#uploadButton").animate({ top: "-58px" }, 300);
+        $("#navSelection").animate({ left: $("#uploadButton").position().left + 53 }, 300);
+        $("#selectionDivot").attr("src", "images/navBar/selectionDivot.png"); 
+        $(".dot").css("background-color", "transparent");
+        $(".dot").eq(2).css("background-color", "#E9C8AE");
+        $("#centeringContainer").hide();
+    
+        // Flower
+        let flowerId = `flower${Date.now()}`;
+        $("#mainScreen").append(`<div class="flowerContainer" id="${flowerId}"><img src="images/flower.png" class="flower"></div>`);
+        let randomBottom = Math.random() * (53 - 45) + 45;  // Random between 45% and 53%
+        let randomLeft = Math.random() * (50 - 35) + 35;    // Random between 35% and 50%
+        $(`#${flowerId}`).css({
+            "bottom": `${randomBottom}%`,
+            "left": `${randomLeft}%`,
+            "transform": "translateY(100%)"
+        });
+        setTimeout(() => {
+            $(`#${flowerId} .flower`).css("transition", "transform 1.5s ease-in-out");
+            $(`#${flowerId} .flower`).css("transform", "translateY(0%)");
+        }, 100);   
     });
+    
+    
     // Flyout File Upload
     $("#dropArea").mouseover(function () {
         $(this).css("background-color", "#E9E9E9");
@@ -101,7 +132,14 @@ $(document).ready(function () {
     });
 
     // Handle file uploads (only accept one file)
-    function handleFiles(files) {
+    async function handleFiles(files) {
+        let file=files[0]
+        if (!files[0]) {
+            console.error("No file selected");
+            return;
+        }
+        console.log(file)
+        
         if (files.length > 0) {
             let file = files[0];
             let reader = new FileReader();       
@@ -111,20 +149,46 @@ $(document).ready(function () {
                     .css({ "max-width": "100%", "max-height": "100%", "object-fit": "contain" });
                 let uploadingText = $("<div>").attr("id", "uploadingText").text("Uploading...");
                 $("#dropArea").append(imgPreview, uploadingText);
-                setTimeout(function () {
+                setTimeout(async function () {
                     $("#uploadingText").text("File Uploaded Successfully!");
-                    let ratingScore = calculateRatingScore();
-                    addReceiptToHistory(e.target.result, ratingScore);
-                    updateRatingList(ratingScore);
-                }, 1000);
+                    let formData = new FormData();
+                    formData.append("file", file);
+                    try {
+                        await fetch("http://localhost:5001/add", {
+                            method: "POST",
+                            body: formData,
+                            mode:"no-cors"
+                        });
+                        let ratingScore = await calculateRatingScore();
+                        console.log("the rating score is",ratingScore)
+                        addReceiptToHistory(e.target.result, ratingScore);
+                        updateRatingList(ratingScore);
+            //let result = await response.json();
+            //console.log(result); // Display extracted items
+                        } catch (error) {
+                            console.error("Error uploading file:", error);
+                        }
+                }, 5000);
             };
             reader.readAsDataURL(file);
             $("#fileInput").val('');
-        }
     }
-
-    function calculateRatingScore() {
-        return Math.floor(Math.random() * 10) + 1;
+    }
+    let userscore=0
+    async function calculateRatingScore() {
+        try {
+            const response = await fetch("http://localhost:5001/getScore");
+            if (!response.ok) {
+                throw new Error("Error fetching score");
+            }
+            const data = await response.json();
+            console.log("Calculated score is:", data.score);
+            userscore=userscore+data.score
+            return data.score;
+        } catch (error) {
+            console.error("Error in calculateRatingScore:", error);
+            return 0; // Return 0 or some default value in case of an error
+        }
     }
 
     // Function to add receipt to history screen with dynamic rating meter
@@ -143,8 +207,9 @@ $(document).ready(function () {
                     $("<img>").addClass("ratingMeter").attr("src", "images/ratingMeter.png")
                 )
             )
-        );  
-        points = points + 25;
+        );
+        points = points + userscore;
+        console.log("points for update is",points)
         $("#progressNum").text(points)
         handlePlant();
         $(".ratingCardContainer").prepend(ratingCard);
@@ -154,7 +219,7 @@ $(document).ready(function () {
     function handlePlant() {
         if (points >= 75) {
             $("#plantImage").attr("src", pointsMap[75]);
-            alert("Congratulations, you've reached 75 points!");
+            $("#progressButton").attr("src", "images/navBar/progressButtonColored.png");
         } else if (points >= 50) {
             $("#plantImage").attr("src", pointsMap[50]);
         } else if (points >= 25) {
@@ -199,10 +264,10 @@ $(document).ready(function () {
         }
     });
     
-    // Making new chats
-    /*function sendMessage() {
+    function sendMessage() {
         let userInput = $("#inputMessage").val().trim();
         if (userInput !== "") {
+            // Append user's message to chat container
             $("#messageContainerContainer").append(
                 $("<div>").addClass("userMessageContainer")
                     .append(
@@ -211,47 +276,33 @@ $(document).ready(function () {
                     )
             ).scrollTop($("#messageContainerContainer")[0].scrollHeight);
             $("#inputMessage").val('');
+    
+            // Make an AJAX POST request to your Flask chatbot endpoint
+            $.ajax({
+                url: "http://127.0.0.1:5002/ask-chatbot", // if your Flask server is on the same origin
+                // If not, use the full URL (e.g., "http://127.0.0.1:5002/ask-chatbot")
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    user_id: "default_user", // Replace with a dynamic user ID if needed
+                    query: userInput
+                }),
+                success: function(response) {
+                    // Append chatbot's reply to chat container
+                    $("#messageContainerContainer").append(
+                        $("<div>").addClass("chatbotMessageContainer")
+                            .append(
+                                $("<img>").addClass("pfp").attr("src", "images/gnomepfp.png"),
+                                $("<div>").addClass("box").append($("<p>").text(response.response))
+                            )
+                    ).scrollTop($("#messageContainerContainer")[0].scrollHeight);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error calling chatbot API: ", error);
+                    // Optionally, display an error message in your chat container
+                }
+            });
         }
-    }*/
-        function sendMessage() {
-            let userInput = $("#inputMessage").val().trim();
-            if (userInput !== "") {
-                // Append user's message to chat container
-                $("#messageContainerContainer").append(
-                    $("<div>").addClass("userMessageContainer")
-                        .append(
-                            $("<img>").addClass("pfp").attr("src", "images/userpfp.png"),
-                            $("<div>").addClass("box").append($("<p>").text(userInput))
-                        )
-                ).scrollTop($("#messageContainerContainer")[0].scrollHeight);
-                $("#inputMessage").val('');
-        
-                // Make an AJAX POST request to your Flask chatbot endpoint
-                $.ajax({
-                    url: "http://127.0.0.1:5002/ask-chatbot", // if your Flask server is on the same origin
-                    // If not, use the full URL (e.g., "http://127.0.0.1:5002/ask-chatbot")
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify({
-                        user_id: "default_user", // Replace with a dynamic user ID if needed
-                        query: userInput
-                    }),
-                    success: function(response) {
-                        // Append chatbot's reply to chat container
-                        $("#messageContainerContainer").append(
-                            $("<div>").addClass("chatbotMessageContainer")
-                                .append(
-                                    $("<img>").addClass("pfp").attr("src", "images/chatbotpfp.png"),
-                                    $("<div>").addClass("box").append($("<p>").text(response.response))
-                                )
-                        ).scrollTop($("#messageContainerContainer")[0].scrollHeight);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error calling chatbot API: ", error);
-                        // Optionally, display an error message in your chat container
-                    }
-                });
-            }
-        }
-        
+    }
+    
 });

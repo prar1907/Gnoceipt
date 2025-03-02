@@ -210,6 +210,30 @@ h1 {
     animation: float 3s ease-in-out infinite;
     z-index: 3;
 }
+#flowerSpawn {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 4;
+    background-color: aqua;
+    height: 90px;
+    width: 300px;
+    animation: float 3s ease-in-out infinite;
+    top: 315px;
+}
+.flowerContainer {
+    position: absolute;
+    z-index: 3;
+    transform: translateX(-50%);
+    overflow: hidden;
+    width: 80px;
+    height: 120px;
+    animation: float 3s ease-in-out infinite;
+}
+.flower {
+    width: 50px;
+    height: auto;
+    transform: translateY(100%);
+}
 
 @keyframes float {
     0% {
@@ -407,7 +431,7 @@ h1 {
     overflow: scroll;
     width: 350px;
     height: 475px;
-    bottom: 20px;
+    bottom: 0px;
 }
 #weeklySusContainer {
     position: relative;
@@ -528,11 +552,13 @@ h1 {
     padding:40px;
 }
 #progressScreen h1{
-    position: relative;
-    top: -25px;
+    position: absolute;
+    z-index: 6;
+    top: 150px;
 }
 #plantImage {
-    height: 300px;
+    position: absolute;
+    height: 41vw;
 }
 
 /* Congrats screen */
@@ -543,16 +569,6 @@ h1 {
     justify-content: center;
     padding:40px;
     background-image: radial-gradient(#FFEFDB, #FDDEB9, #FFB973);
-}
-#progressScreen h1{
-    position: relative;
-    top: -25px;
-}
-#plantImage {
-    margin-bottom: 70px;
-    position: relative;
-    top: 30px;
-    height: 300px;
 }
 #returntoMain {
     position: relative;
@@ -565,8 +581,18 @@ h1 {
     color: white;
     cursor: pointer;
 }
-#congratsText {
-    line-height: 30px;
-    font-size: 2em;
+.congratsText {
     text-align: center;
+}
+#congratsHead {
+    font-size: 2.2em;
+}
+#congratsP {
+    margin-top: 10px;
+    font-size: 1.4;
+    font-weight: bold;
+}
+#prize {
+    width: 13vw;
+    margin: 30px;
 }
