@@ -41,14 +41,16 @@ def get_users():
 def add_receipt():
     try:
         data = request.json
+        print(data)
         receipt = {
             "items": data["items"],
-            "store_name": data["store_name"],
-            "date": datetime.utcnow()
+            #"store_name": data["store_name"],
+            "date": datetime.now()
         }
-        mongo.db.receipts.insert_one(receipt)
+        db["receipts"].insert_one(receipt)
         return jsonify({"message": "Receipt added successfully"}), 201
     except Exception as e:
+        print("error here")
         return jsonify({"error": str(e)}), 500
 # use a database named "myDatabase"
 
@@ -67,4 +69,4 @@ def get_receipts():
 
 # Start Server
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    app.run(debug=False, port=5001)

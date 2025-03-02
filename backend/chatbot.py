@@ -49,4 +49,4 @@ def ask_chatbot():
         return jsonify({"error": "Failed to get response from Gemini API"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,port=5002)

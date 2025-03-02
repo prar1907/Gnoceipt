@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 
 # Set backend API URL
-API_URL = "http://127.0.0.1:5000/ask-chatbot"
+API_URL = "http://127.0.0.1:5002/ask-chatbot"
 
 # Initialize chat history in Streamlit's session state
 if "chat_history" not in st.session_state:
