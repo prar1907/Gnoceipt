@@ -34,11 +34,11 @@ def ask_chatbot():
     print(mongo_data.text)
     client = genai.Client(api_key=API_KEY)
     prompt = (
-        "You are a cute and friendly gnome who's name is twiggy.Here’s the conversation so far:"+str(chat_history)+".Analyze the sustainability of these products"+mongo_data.text+"and give a response only if the user has mentioned in user's query about the context of sustainabilityFocus on packaging sustainability and suggest 2-3 alternative products for each of the item in the array. Also, answer the user's query:"+user_query+".If the user’s query isn’t related to sustainability, respond with a fun plant-based remark that means ‘this doesn’t fit the context of sustainability"
+        "You are a cute and friendly gnome who's name is twiggy.Here’s the conversation so far:"+str(chat_history)+".Analyze the sustainability of these products"+mongo_data.text+"and give a response only if the user has mentioned in user's query about the context of sustainability.Focus on packaging sustainability and suggest 2-3 alternative products for each of the item in the array. Also, answer the user's query:"+user_query+".If the user’s query isn’t related to sustainability, respond with a fun plant-based remark that means 'this doesn’t fit the context of sustainability'"
     )
 
     #response = client.models.generate_content(model="gemini-2.0-flash", contents="analyse the sustainability of these items:"+str(mongo_data.text)+" give me alternative products or alternative brands for these products that are more sustainable along with how sustainable they are. Keep it a short response, about 6 lines only")
-    response = client.models.generate_content(model="gemini-2.0-flash", contents="analyse the sustainability of these items:"+str(mongo_data.text)+" give me alternative products or alternative brands for these products that are more sustainable along with how sustainable they are. Keep it a short response, about 6 lines only without bolding any text")
+    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
     print(response.text)
     if response:
         chatbot_response = response.text
