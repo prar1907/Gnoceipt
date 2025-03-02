@@ -200,7 +200,7 @@ $(document).ready(function () {
     });
     
     // Making new chats
-    function sendMessage() {
+    /*function sendMessage() {
         let userInput = $("#inputMessage").val().trim();
         if (userInput !== "") {
             $("#messageContainerContainer").append(
@@ -212,5 +212,46 @@ $(document).ready(function () {
             ).scrollTop($("#messageContainerContainer")[0].scrollHeight);
             $("#inputMessage").val('');
         }
-    }
+    }*/
+        function sendMessage() {
+            let userInput = $("#inputMessage").val().trim();
+            if (userInput !== "") {
+                // Append user's message to chat container
+                $("#messageContainerContainer").append(
+                    $("<div>").addClass("userMessageContainer")
+                        .append(
+                            $("<img>").addClass("pfp").attr("src", "images/userpfp.png"),
+                            $("<div>").addClass("box").append($("<p>").text(userInput))
+                        )
+                ).scrollTop($("#messageContainerContainer")[0].scrollHeight);
+                $("#inputMessage").val('');
+        
+                // Make an AJAX POST request to your Flask chatbot endpoint
+                $.ajax({
+                    url: "http://127.0.0.1:5002/ask-chatbot", // if your Flask server is on the same origin
+                    // If not, use the full URL (e.g., "http://127.0.0.1:5002/ask-chatbot")
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        user_id: "default_user", // Replace with a dynamic user ID if needed
+                        query: userInput
+                    }),
+                    success: function(response) {
+                        // Append chatbot's reply to chat container
+                        $("#messageContainerContainer").append(
+                            $("<div>").addClass("chatbotMessageContainer")
+                                .append(
+                                    $("<img>").addClass("pfp").attr("src", "images/chatbotpfp.png"),
+                                    $("<div>").addClass("box").append($("<p>").text(response.response))
+                                )
+                        ).scrollTop($("#messageContainerContainer")[0].scrollHeight);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error calling chatbot API: ", error);
+                        // Optionally, display an error message in your chat container
+                    }
+                });
+            }
+        }
+        
 });

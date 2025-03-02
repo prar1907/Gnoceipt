@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify , session
 import requests
+from flask_cors import CORS
+
 chat_histories = {}
 
 app = Flask(__name__)
-
+CORS(app)
 
 API_KEY = "AIzaSyCUTZd5LPEQ5pco1zJcS3avrjWlQSTISXw"
 from google import genai
@@ -32,10 +34,10 @@ def ask_chatbot():
     print(mongo_data.text)
     client = genai.Client(api_key=API_KEY)
     prompt = (
-        "Here’s the conversation so far:"+str(chat_history)+".Analyze the sustainability of these products only if the user has mentioned in their query about the context of sustainability:"+mongo_data.text+".Focus on packaging sustainability and suggest 4-5 alternative products. Also, answer the user's query:"+user_query+". Only include recommendations from stored receipts if relevant.If the user’s query isn’t related to sustainability, respond with a fun plant-based remark that means ‘this doesn’t fit the context of sustainability"
+        "Here’s the conversation so far:"+str(chat_history)+".Analyze the sustainability of these products"+mongo_data.text+"and give a response only if the user has mentioned in user's query about the context of sustainabilityFocus on packaging sustainability and suggest 4-5 alternative products. Also, answer the user's query:"+user_query+". Only include recommendations from stored receipts if relevant.If the user’s query isn’t related to sustainability, respond with a fun plant-based remark that means ‘this doesn’t fit the context of sustainability"
     )
 
-    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+    response = client.models.generate_content(model="gemini-2.0-flash", contents="analyse the sustainability of these items:"+str(mongo_data.text)+" give me alternative products or alternative brands for these products that are more sustainable along with how sustainable they are. Keep it a short response, about 6 lines only")
     print(response.text)
     if response:
         chatbot_response = response.text
