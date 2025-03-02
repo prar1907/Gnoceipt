@@ -32,13 +32,10 @@ def ask_chatbot():
     print(mongo_data.text)
     client = genai.Client(api_key=API_KEY)
     prompt = (
-        "Here is the previous conversation: " + str(chat_history) +
-        "\nNow, analyze the sustainability of these products: " + str(mongo_data.text) +
-        ". query1: Explain the packaging sustainability, and suggest 4-5 alternative products. Also, answer the user's query: " + user_query +
-        ". query2: Also, refer to the stored receipts for better recommendations: " + mongo_data.text
+        "Here’s the conversation so far:"+str(chat_history)+".Analyze the sustainability of these products only if the user has mentioned in their query about the context of sustainability:"+mongo_data.text+".Focus on packaging sustainability and suggest 4-5 alternative products. Also, answer the user's query:"+user_query+". Only include recommendations from stored receipts if relevant.If the user’s query isn’t related to sustainability, respond with a fun plant-based remark that means ‘this doesn’t fit the context of sustainability"
     )
 
-    response = client.models.generate_content(model="gemini-2.0-flash", contents="keep the content short and if user query doesn't have the word sustainability answer only the user query part of it, not query1 and query2. But make sure user query is related to sustainability/sustainable/sustain/planet or anything to make this world a better place else say something funky and funny in a plant based way which means the same as I'm sorry but that doesn't seem right in the context of sustainability in a fun plant related chatbot way.given_prompt:"+prompt)
+    response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
     print(response.text)
     if response:
         chatbot_response = response.text
